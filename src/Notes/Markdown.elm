@@ -1,4 +1,4 @@
-module Notes.Markdown exposing (main)
+module Notes.Markdown exposing (..)
 
 import Browser
 import Css exposing (..)
@@ -26,18 +26,6 @@ view markdownInput =
         ]
 
 
-markdownInputView : String -> Html Msg
-markdownInputView markdownInput =
-    Html.textarea
-        [ Attr.value markdownInput
-        , Html.Events.onInput OnMarkdownInput
-        , Attr.style "width" "100%"
-        , Attr.style "height" "500px"
-        , Attr.style "font-size" "18px"
-        ]
-        []
-
-
 deadEndsToString deadEnds =
     deadEnds
         |> List.map Markdown.deadEndToString
@@ -46,12 +34,28 @@ deadEndsToString deadEnds =
 
 markdownBody =
     """
-# 1 Esse intrata referre inter adspeximus aequora soror
+## Ziele, Inhalte und Methode der Lehrver
+Die Grundlagen der numerischen Analysis werden behandelt, insbesondere Kondition von Problemen, Stabilität von Algorithmen und Konvergenz von numerischen Verfahren.
+Die folgenden Probleme werden behandelt: lineare und nichtlineare Gleichungssystemen, Optimierungsprobleme, Interpolation, Eigenwertprobleme, Differentiation und Integration.
+Wir implementieren die Algorithmen in der Programmiersprache Julia.
 
-3 Iamque insula, ore longe dixerat libratum neque terrarum resedit de iuranda cum
-muneris *tamen*, suas populique te. Alumno invidiae cecinit exarsit modo vidit
-ingentia suum, et pluribus sensu *Danais* adigitque acervo gravis visae,
-capillos!
+## Art der Leistungskontrolle und erlaubte Hilfsmittel
+
+schriftliche oder mündliche Prüfungen
+
+## Mindestanforderungen und Beurteilungsmaßstab
+
+Für eine positive Prüfungsbewertung sind mindestens 50% der erreichbaren Punkte zu erzielen.
+
+## Prüfungsstoff
+
+Gesamter Stoff der Vorlesung.
+
+## Literatur
+
+- Trefethen, Bau: Numerical Linear Algebra, SIAM, 1997.
+- Deuflhard, Hohmann: Numerische Mathematik 1, De Gruyter, 2019.
+- Bourgeois, M.: Grundlagen der Numerischen Mathematik und des Wissenschaftlichen Rechnens, Teubner, 2002.
 
 """
 
@@ -70,9 +74,9 @@ type alias Model =
 
 main : Platform.Program Flags Model Msg
 main =
-    Browser.document
+    Browser.element
         { init = \flags -> ( markdownBody, Cmd.none )
-        , view = \model -> { body = [ view model ], title = "Markdown Example" }
+        , view = view
         , update = update
         , subscriptions = \model -> Sub.none
         }

@@ -1,12 +1,9 @@
-module Uni.Course exposing (Course, Msg(..), main, update, view)
+module Uni.Course exposing (..)
 
 import Browser
 import Html exposing (..)
 import Html.Events exposing (onClick)
-
-
-main =
-    Browser.sandbox { init = lg, update = update, view = view }
+import Notes.Markdown exposing (..)
 
 
 type alias Book =
@@ -40,7 +37,7 @@ type alias CourseDescription =
     }
 
 
-type alias Course =
+type alias Metadata =
     { name : String
     , teacher : Name
     , semester : String
@@ -50,7 +47,15 @@ type alias Course =
     }
 
 
-cga : Course
+type alias Model =
+    { info : Metadata, schedule : List String }
+
+
+data =
+    [ cga, lg ]
+
+
+cga : Metadata
 cga =
     { name = "Cohomology of Groups and Algebras"
     , teacher = "Dietrich Burde"
@@ -61,7 +66,7 @@ cga =
     }
 
 
-lg : Course
+lg : Metadata
 lg =
     { name = "Lie Groups"
     , teacher = "Andreas Cap"
@@ -72,35 +77,53 @@ lg =
     }
 
 
-update : Msg -> Course -> Course
+update : Msg -> Model -> ( Model, Cmd msg )
 update msg course =
-    course
-
-
-
---view : Model -> Html Msg
---view model =
---    div []
---        [ button [ onClick Decrement ] [ text "-" ]
---        , div [] [ text (String.fromInt model) ]
---        , button [ onClick Increment ] [ text "+" ]
---        ]
+    case msg of
+        _ ->
+            ( course, Cmd.none )
 
 
 type Msg
     = Int
 
 
-view : Course -> Html Msg
-view course =
+view : Model -> Html Msg
+view model =
     div []
         [ div
             []
             [ h3 []
-                [ text course.name
+                [ text model.info.name
                 ]
             ]
         , div []
-            [ text course.teacher
+            [ text model.info.teacher
+
+            --, viewMarkdown model.description.information
             ]
         ]
+
+
+testData : Model
+testData =
+    { info = lg, schedule = [ "lec 1", "lec 1" ] }
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( testData, Cmd.none )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+main =
+    Browser.element
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }

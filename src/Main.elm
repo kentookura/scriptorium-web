@@ -5,6 +5,7 @@ import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Math as Math
+import Uni.Course as Course
 import Url
 
 
@@ -24,23 +25,16 @@ main =
         }
 
 
-
--- MODEL
-
-
 type alias Model =
     { key : Nav.Key
     , url : Url.Url
+    , courses : List Course.Metadata
     }
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model key url, Cmd.none )
-
-
-
--- UPDATE
+    ( Model key url Course.data, Cmd.none )
 
 
 type Msg
@@ -65,17 +59,9 @@ update msg model =
             )
 
 
-
--- SUBSCRIPTIONS
-
-
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
-
-
-
--- VIEW
 
 
 view : Model -> Browser.Document Msg
@@ -86,10 +72,8 @@ view model =
         , b [] [ text (Url.toString model.url) ]
         , ul []
             [ viewLink "/home"
-            , viewLink "/profile"
-            , viewLink "/reviews/the-century-of-the-self"
-            , viewLink "/reviews/public-opinion"
-            , viewLink "/reviews/shah-of-shahs"
+            , viewLink "/courses"
+            , viewLink "/notes"
             ]
         ]
     }
