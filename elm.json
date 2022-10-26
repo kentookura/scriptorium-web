@@ -12,12 +12,18 @@
             "elm/html": "1.0.0",
             "elm/http": "2.0.0",
             "elm/parser": "1.1.0",
+            "elm/svg": "1.0.1",
             "elm/url": "1.0.0",
+            "elm-community/html-extra": "3.4.0",
+            "elm-community/maybe-extra": "5.3.0",
+            "lukewestby/elm-http-builder": "8.0.0",
             "mgold/elm-nonempty-list": "4.2.0",
             "rtfeldman/elm-css": "18.0.0",
+            "rundis/elm-bootstrap": "5.2.0",
             "yotamDvir/elm-katex": "2.0.2"
         },
         "indirect": {
+            "avh4/elm-color": "1.0.0",
             "elm/bytes": "1.0.8",
             "elm/file": "1.0.5",
             "elm/json": "1.1.3",

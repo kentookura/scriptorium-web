@@ -6,4 +6,4 @@ type alias Env =
 
 
 type alias Flags =
-    { operatingSystem : String, basePath : String, apiUrl : String }
+    { basePath : String }

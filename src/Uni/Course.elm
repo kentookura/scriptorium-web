@@ -2,7 +2,10 @@ module Uni.Course exposing (..)
 
 import Browser
 import Html exposing (..)
+import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
+import Markdown.Parser as Markdown
+import Markdown.Renderer
 import Notes.Markdown exposing (..)
 
 
@@ -31,92 +34,67 @@ type Language
     | German
 
 
-type alias CourseDescription =
-    { information : String
-    , literature : List Book
-    }
-
-
-type alias Metadata =
+type alias Course =
     { name : String
     , teacher : Name
     , semester : String
     , ects : ECTS
     , language : Language
-    , description : CourseDescription
+    , description : String
+    , literature : List Book
+    , schedule : List String
     }
 
 
-type alias Model =
-    { info : Metadata, schedule : List String }
-
-
-data =
-    [ cga, lg ]
-
-
-cga : Metadata
-cga =
-    { name = "Cohomology of Groups and Algebras"
-    , teacher = "Dietrich Burde"
-    , semester = "WS2022"
-    , ects = 5
-    , language = English
-    , description = { information = "asdf", literature = [ "asdf", "asdf" ] }
-    }
-
-
-lg : Metadata
-lg =
-    { name = "Lie Groups"
-    , teacher = "Andreas Cap"
-    , semester = "WS2022"
-    , ects = 5
-    , language = English
-    , description = { information = "asdf", literature = [ "asdf", "asdf" ] }
-    }
-
-
-update : Msg -> Model -> ( Model, Cmd msg )
-update msg course =
+update : Msg -> Course -> ( Course, Cmd msg )
+update msg courses =
     case msg of
         _ ->
-            ( course, Cmd.none )
+            ( courses, Cmd.none )
 
 
 type Msg
     = Int
 
 
-view : Model -> Html Msg
-view model =
-    div []
+view : Course -> Html a
+view course =
+    div
+        []
         [ div
             []
             [ h3 []
-                [ text model.info.name
+                [ text course.name
                 ]
             ]
-        , div []
-            [ text model.info.teacher
+        , div
+            [ style "border-radius" "5px"
+            , style "background-color" "#f6edd9"
+            , style "padding" "20px"
+            ]
+            [ text course.teacher
+            , case
+                course.description
+                    |> Markdown.parse
+                    |> Result.mapError deadEndsToString
+                    |> Result.andThen (\ast -> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer ast)
+              of
+                Ok rendered ->
+                    div [] rendered
 
-            --, viewMarkdown model.description.information
+                Err errors ->
+                    text errors
             ]
         ]
 
 
-testData : Model
-testData =
-    { info = lg, schedule = [ "lec 1", "lec 1" ] }
-
-
-init : () -> ( Model, Cmd Msg )
+init : () -> ( Course, Cmd Msg )
 init _ =
-    ( testData, Cmd.none )
+    ( lg, Cmd.none )
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions : Course -> Sub Msg
+subscriptions courses =
     Sub.none
 
 
@@ -127,3 +105,42 @@ main =
         , view = view
         , subscriptions = subscriptions
         }
+
+
+data =
+    [ cga, lg ]
+
+
+cga : Course
+cga =
+    { name = "Cohomology of Groups and Algebras"
+    , teacher = "Dietrich Burde"
+    , semester = "WS2022"
+    , ects = 5
+    , language = English
+    , description = "asdf"
+    , literature = []
+    , schedule = []
+    }
+
+
+lg : Course
+lg =
+    { name = "Lie Groups"
+    , teacher = "Andreas Cap"
+    , semester = "WS2022"
+    , ects = 5
+    , language = English
+    , literature =
+        [ "Brickell, Clark, Differentiable manifolds"
+        , "Cap, Lie Groups"
+        , "Chevalley, Theory of Lie groups"
+        , "Duistermaat, Kolk, Lie groups"
+        , "Hilgert, Neeb, Lie Gruppen und Lie Algebren"
+        , "Lee, Manifolds and differential geometry"
+        , "Michor, Topics in differential geometry"
+        ]
+    , description =
+        "## Ziele, Inhalte und Methode der Lehrveranstaltung\nThis lecture course serves as a first introduction to the theory of Lie groups. The focus will be on the interrelation between Lie groups and their Lie algebras. Among others, the following topics will be treated: topological properties, matrix groups, exponential map, Lie subgroups, homomorphisms, the Frobenius theorem, group actions, classification of Lie groups, representation theory of compact Lie groups. The lecture will be based on this script: https://www.mat.univie.ac.at/~mike/teaching/ws1920/lg.pdf\n## Art der Leistungskontrolle und erlaubte Hilfsmittel\nOral exam.\n\n## Mindestanforderungen und Beurteilungsmaßstab\nWorking knowledge of course material.\n\n## Prüfungsstoff\n\nContent of the lecture.n"
+    , schedule = []
+    }

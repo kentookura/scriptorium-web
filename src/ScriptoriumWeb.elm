@@ -1,17 +1,16 @@
 module ScriptoriumWeb exposing (..)
 
 import Browser
-import Scriptorium.App as App
-import Scriptorium.Env exposing (Flags)
-import Scriptorium.PreApp as PreApp
+import Main exposing (..)
 
 
-main : Program Flags PreApp.Model PreApp.Msg
+main : Program Flags Model Msg
 main =
     Browser.application
-        { init = PreApp.init
-        , update = PreApp.update
-        , subscriptions = PreApp.subscriptions
-        , onUrlRequest = App.LinkClicked >> PreApp.AppMsg
-        , onUrlChange = App.UrlChanged >> PreApp.AppMsg
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        , onUrlRequest = ClickedLink
+        , onUrlChange = UrlChange
         }
